@@ -1,0 +1,21 @@
+{
+  "name": "web_lib",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --progress",
+    "watch": "webpack --progress --watch",
+    "server": "webpack-dev-server --config webpack.config.js --open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shurik9903/WEB-LIB.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shurik9903/WEB-LIB/issues"
+  },
+  "homepage": "https://github.com/shurik9903/WEB-LIB#readme"
+}
