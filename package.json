@@ -17,5 +17,25 @@
   "bugs": {
     "url": "https://github.com/shurik9903/WEB-LIB/issues"
   },
-  "homepage": "https://github.com/shurik9903/WEB-LIB#readme"
+  "homepage": "https://github.com/shurik9903/WEB-LIB#readme",
+  "devDependencies": {
+    "@babel/core": "^7.17.8",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "css-loader": "^6.7.1",
+    "file-loader": "^6.2.0",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.4"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.17.9",
+    "react": "^18.0.0",
+    "react-css-modules": "^4.7.11",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.3.0",
+    "react-scripts": "^5.0.1",
+    "regenerator-runtime": "^0.13.9"
+  }
 }
