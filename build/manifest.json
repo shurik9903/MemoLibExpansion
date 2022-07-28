@@ -26,7 +26,8 @@
     "content_scripts": [
         {
           "matches": ["https://ranobelib.me/*"],
-          "js": ["contentscript.js"]
+          "js": ["contentscript.js"],
+          "css": ["contentcss.css"]
         }
     ]
 }

@@ -1,0 +1,17 @@
+.basic_div {
+    display: flex;
+    flex-direction: row;
+}
+
+.lib_window {
+    width: 50%;
+
+    color: black;
+
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 0 3px 1px rgb(255, 255, 255), 0 0 5px 5px rgb(88, 88, 88), 0 0 10px 7px rgb(255, 255, 255);
+}
+
+.text {
+    display:inline;
+}
