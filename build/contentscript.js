@@ -2,7 +2,7 @@
 
 console.log("start");
 
-let find = ["Хан Сяо"];
+let find = ["Хан Сяо", "Хила", "Хиле", "Хилу"];
 
 let reader = document.getElementsByClassName("reader");
 let reader_container = document.getElementsByClassName("reader-container");
@@ -19,8 +19,15 @@ Array.from(reader_container[0].children).forEach(element => {
     new_div.lastChild.className = "text";
     new_div.lastChild.innerText = element.innerText;
 
-    if (find)
+    if (find){
+
+        let all_name = [];
+
+        let global_space = 0;
+
         find.forEach(word => {
+
+            global_space = 0;
 
             let text = element.innerText;
 
@@ -32,38 +39,67 @@ Array.from(reader_container[0].children).forEach(element => {
 
                 let end = word.length + start;
 
-                let text_div = document.createElement("div");
-                let prev_div = document.createElement("div");
-                let next_div = document.createElement("div");
+                all_name.push({"name":word, "start":start + global_space, "end": end + global_space});
 
-                text_div.className = "text name_" + word.replace(/\-|\s/g, '_');
-                prev_div.className = "text";
-                next_div.className = "text";
-
-                text_div.innerText = word;
-                prev_div.innerText = new_div.lastChild.innerText.substring(0, start)
-                next_div.innerText = new_div.lastChild.innerText.substring(end)
-                
-                if (prev_div.innerText.length != 0){
-                    new_div.replaceChild(prev_div, new_div.lastChild)
-                    new_div.appendChild(text_div);
-                } else {
-                    new_div.replaceChild(text_div, new_div.lastChild);
-                }
-                
-                new_div.appendChild(next_div);
-
-                text = next_div.innerText;
+                global_space += end;
+                text = text.substring(end);
 
             } while(true);
-        })
+        });
+
+        all_name.sort(function (a, b) {
+            if (a.start > b.start) {
+                return 1;
+            }
+            if (a.start < b.start) {
+                return -1;
+            }
+
+            return 0;
+        });
+
+        global_space = 0;
+
+        all_name.forEach(AName => {
+
+            console.log(AName);
+            console.log(element);
+
+            let text_div = document.createElement("div");
+            let prev_div = document.createElement("div");
+            let next_div = document.createElement("div");
+
+            text_div.className = "text";
+            text_div.setAttribute("name", AName.name) ;
+
+            prev_div.className = "text";
+            next_div.className = "text";
+
+            text_div.innerText = AName.name;
+            prev_div.innerText = element.innerText.substring(global_space, AName.start);
+            next_div.innerText = element.innerText.substring(AName.end);
+
+            console.log(prev_div.innerText.length);
+
+            if (prev_div.innerText.length != 0){
+                new_div.replaceChild(prev_div, new_div.lastChild);
+                new_div.appendChild(text_div);
+            } else {
+                new_div.replaceChild(text_div, new_div.lastChild);
+            }
+
+            console.log(next_div);
+            global_space = AName.end;
+
+            new_div.appendChild(next_div);
+
+        });
+
+    }
 
     new_reader_container.appendChild(new_div);
 
 });
-
-
-
 
 let basic_div = document.createElement("div");
 basic_div.className = "basic_div";
@@ -84,9 +120,6 @@ if (reader && reader[0].children.length > 0 &&
     basic_div.appendChild(new_reader_container);
     basic_div.appendChild(lib_window);
 }
-
-
-    
 
 // // let all_text = "";
 

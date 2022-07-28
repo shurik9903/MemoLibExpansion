@@ -15,3 +15,17 @@
 .text {
     display:inline;
 }
+
+.text_block {
+    margin: 0 0 10px;
+}
+
+.text[name] {
+    color: red;
+
+    cursor: pointer;
+}
+
+.text[name]:hover {
+    font-weight: bolder;
+}
