@@ -42,30 +42,102 @@
 
 }
 
-.lib_basic * {
+.lib_menu {
+
     display: flex;
+    overflow-y: auto;
+
     
-    background-color: rgba(255, 255, 255, 0.7);
+    align-items: center;
+    
+    background-color: rgba(255, 255, 255, 0.8);
 
     margin: 2% 0% 2% 0%;
 
     border-radius: 5px;
     border: 3px solid rgba(41, 41, 41, 0.7);
-}
-
-.lib_menu {
 
     min-width: 96%;
     min-height: 20%;
 
 }
 
+.lib_button {
+
+    line-height: 1.6;
+    
+    margin: 5%;
+
+    padding: 0;
+
+    font-size: 20px;
+
+    background-color: rgba(72, 72, 72, 0.8);
+
+    width: 50px;
+    height: 50px;
+}
+
+.lib_button:hover {
+
+    cursor: pointer;
+
+    background-color: rgba(255, 50, 50, 0.8);
+}
+
 .lib_view {
 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    background-color: rgba(255, 255, 255, 0.8);
+
+    margin: 2% 0% 2% 0%;
+
+    border-radius: 5px;
+    border: 3px solid rgba(41, 41, 41, 0.7);
 
     min-width: 96%;
-    min-height: 72%;
+    min-height: 74%;
 
+    overflow: auto;
+
+}
+
+.lib_name {
+
+    color: black;
+
+    margin: 2%;
+
+    min-width: 98%;
+    min-height: 10%;
+
+    border-radius: 3px;
+    border: 2px solid rgba(41, 41, 41, 0.7);
+}
+
+.lib_image {
+
+    margin: 2%;
+
+    min-width: 98%;
+    min-height: 10%;
+
+    border-radius: 3px;
+    border: 2px solid rgba(41, 41, 41, 0.7);
+
+}
+
+.lib_text {
+    margin: 2%;
+
+    min-width: 98%;
+    min-height: 10%;
+
+    border-radius: 3px;
+    border: 2px solid rgba(41, 41, 41, 0.7);
 }
 
 .text {
