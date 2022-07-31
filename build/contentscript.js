@@ -2,6 +2,17 @@
 
 console.log("Start Lib");
 
+
+(async () => {
+
+    //Импорт модуля меню библиотеки
+    const lib_src = chrome.runtime.getURL("lib_window.js");
+    const lib = await import(lib_src);
+
+})();
+
+
+//Импорт модуля логики
 let find = ["Хан Сяо", "Хила", "Хиле", "Хилу"];
 
 let reader = document.getElementsByClassName("reader");
@@ -39,12 +50,9 @@ if (reader && reader[0].children.length > 0 &&
     basic_div.appendChild(new_reader_container);
 }
 
-let lib_window = document.createElement("div");
-lib_window.className = "lib_window";
 
-lib_window.innerHTML = "qweqwe";
 
-document.body.appendChild(lib_window);
+
 
 
 

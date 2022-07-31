@@ -29,5 +29,11 @@
           "js": ["contentscript.js"],
           "css": ["contentcss.css"]
         }
-    ]
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [ "lib_window.js" ],
+            "matches": [ "https://ranobelib.me/*" ]
+        }
+     ]
 }
