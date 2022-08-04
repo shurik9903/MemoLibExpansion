@@ -1,6 +1,179 @@
 import {lib_logic} from "./lib_logic.js";
 
+const person_lib_view = (() => {
+
+    let view_name = document.createElement("div");
+    view_name.className = "lib_view_name";
+
+    //Имя персонажа
+    let name_container = document.createElement("div");
+    name_container.className = "lib_container";
+
+    let name_text = document.createElement("div");
+    name_text.className = "lib_container_text";
+    name_text.innerText = "Имя";
+
+    let name = document.createElement("div");
+    name.className = "lib_name";
+
+    [name_text, name].forEach(e => name_container.appendChild(e));
+
+    //Изображения
+    let image_container = document.createElement("div");
+    image_container.className = "lib_container";
+
+    let image_text = document.createElement("div");
+    image_text.className = "lib_container_text";
+    image_text.innerText = "Изображения";
+
+    let image = document.createElement("div");
+    image.className = "lib_image";
+
+    [image_text, image].forEach(e => image_container.appendChild(e));
+
+    //Текст
+    let text_container = document.createElement("div");
+    text_container.className = "lib_container";
+
+    let text_text = document.createElement("div");
+    text_text.className = "lib_container_text";
+    text_text.innerText = "Описание";
+
+    let text = document.createElement("div");
+    text.className = "lib_text";
+
+    [text_text, text].forEach(e => text_container.appendChild(e));
+
+    [name_container, image_container, text_container].forEach(e => view_name.appendChild(e));
+
+    const show = () => {
+        return view_name;
+    };
+
+    return {
+        show: show
+    };
+
+})();
+
+
+const list_view = (() => {
+
+    let view_list = document.createElement("div");
+    view_list.className = "lib_view_list"; 
+
+    const show = () => {
+
+        lib_logic.list_person().then(result => {
+
+            view_list.innerHTML = ''; 
+
+            let all_person = [];
+
+            let title_name = document.getElementsByClassName("reader-header-action__title")[0].innerText;
+            
+
+            if (result && result.lib_user_data && result.lib_user_data.length != 0){
+
+                let data = result.lib_user_data;
+
+                for (let element of data)
+                    if (element.title_name == title_name && element.title_data)
+                            all_person = element.title_data;
+                       
+            }
+
+            all_person.forEach((data) => {
+
+
+                let person_container = document.createElement("div");
+                person_container.className = "lib_person_container";
+                person_container.innerText = data.person_name;
+                person_container.style.color = data.color;
+        
+                view_list.appendChild(person_container);
+            })
+
+            }, error => {
+                console.log(`Error data chrome get: ${error}`);
+            }
+        )
+
+        return view_list;
+    }
+
+    return {
+        show: show
+    };
+
+})()
+
+
+const add_person_view = (() => {
+
+    let view_add = document.createElement("div");
+    view_add.className = "lib_view_add";
+
+    let text = document.createElement("div");
+    text.className = "lib_text_add";
+    text.innerText = "Введите имя нового персонажа";
+
+    let input = document.createElement("input");
+    input.className = "lib_input_add";
+
+    let color_text = document.createElement("div");
+    color_text.className = "lib_text_add";
+    color_text.innerText = "Задайте цвет персонажа (если цвет не будет выбран, то будет выбран случайный цвет)";
+
+    let color_pick = document.createElement("input");
+    color_pick.className = "lib_input_color";
+    color_pick.type = "color";
+
+    let check_conteiner = document.createElement("div");
+    check_conteiner.className = "lib_check_conteiner";
+
+    let check_text = document.createElement("div");
+    check_text.className = "lib_check_text";
+    check_text.innerText = "Склоняемое имя:  ";
+
+    let check_declination = document.createElement("input");
+    check_declination.className = "lib_check_declination";
+    check_declination.type = "checkbox";
+
+    [check_text, check_declination].forEach(e => check_conteiner.appendChild(e));
+
+    let add = document.createElement("div");
+    add.className = "lib_button_add";
+    add.innerText = "Добавить";
+
+    add.onclick = () => {
+        if (input.value.replace(/\s/g, '').length != 0 && /[А-яЁёA-Za-z0-9]/g.test(input.value) == true){
+            console.log(`add ${input.value}`);
+ 
+            lib_logic.new_person(input.value, color_pick.value, check_declination.checked);
+        }
+    }
+
+    [text, input, color_text, color_pick, check_conteiner, add].forEach(e => view_add.appendChild(e));
+
+    const show = () => {
+
+        let randomColor = Math.floor(Math.random()*16777215).toString(16);
+        color_pick.value = "#" + randomColor;
+
+        return view_add;
+    };
+
+    return {
+        show: show
+    };
+
+})();
+
+
 const inject_window = (() => {
+
+    // chrome.storage.sync.clear();
 
     //Внешнее Окно
     let window = document.createElement("div");
@@ -12,44 +185,44 @@ const inject_window = (() => {
 
     window.appendChild(basic);
 
+    //Меню
     let menu = document.createElement("div");
     menu.className = "lib_menu";
 
+    //Окно просмотра
     let view = document.createElement("div");
     view.className = "lib_view";
 
     basic.appendChild(menu);
 
-    let TestB1 = document.createElement("div");
-    TestB1.className = "lib_button";
-    TestB1.innerHTML = "add";
+    //Кнопка добавления нового имени
+    let B_Add = document.createElement("div");
+    B_Add.className = "lib_button";
+    B_Add.innerHTML = "add";
 
-    TestB1.onclick = () => {
-        let enter_name = prompt("Please enter name", "");
-    
-        lib_logic.new_person(enter_name);
-        
+    B_Add.onclick = () => {
+
+        view.innerHTML = '';
+
+        view.appendChild(add_person_view.show());
     }
 
-    let TestB2 = document.createElement("div");
-    TestB2.className = "lib_button";
-    TestB2.innerHTML = "list";
+    //Кнопка просмотра имеющихся имен
+    let B_List = document.createElement("div");
+    B_List.className = "lib_button";
+    B_List.innerHTML = "list";
 
-    menu.appendChild(TestB1);
-    menu.appendChild(TestB2);
+    B_List.onclick = () => {
+
+        view.innerHTML = '';
+
+        view.appendChild(list_view.show());
+    }
+
+    menu.appendChild(B_Add);
+    menu.appendChild(B_List);
 
     basic.appendChild(view);
-
-    let name = document.createElement("div");
-    name.className = "lib_name";
-
-    let image = document.createElement("div");
-    image.className = "lib_image";
-
-    let text = document.createElement("div");
-    text.className = "lib_text";
-
-    [name, image, text].forEach(e => view.appendChild(e));
 
     document.body.appendChild(window);
 })();

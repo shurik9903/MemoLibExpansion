@@ -2,24 +2,18 @@ const lib_logic = (() => {
 
     class lib_logic_class {
 
-        new_person(name) {
+        async new_person_async(name, color, declination) {
 
             // chrome.storage.sync.clear();
 
             let data = [];
             
             let title_name = document.getElementsByClassName("reader-header-action__title")[0].innerText;
-            console.log(title_name);
 
             chrome.storage.sync.get(['lib_user_data'], function(result) {
                 if (result && result.lib_user_data && result.lib_user_data.length != 0){
 
-                    console.log("test1");
-                    console.log(result.lib_user_data);
-                    
                     data = result.lib_user_data;
-                    
-                    console.log(data);
 
                     for (let element of data){
                         if (element.title_name == title_name && element.title_data){
@@ -28,13 +22,13 @@ const lib_logic = (() => {
                                 return find_element.person_name == name;
                             })) break ;
 
-
-
                             element.title_data.push(
                                 {
                                     person_name: name,
                                     image: [],
-                                    text: ""
+                                    text: "",
+                                    color: color,
+                                    declination: declination
                                 }
                             );
                         }
@@ -47,15 +41,16 @@ const lib_logic = (() => {
                     }
 
                 } else {
-                    
-                    console.log("test2");
+
                     data = [{
                         title_name: title_name,
                         title_data: [
                             {
                                 person_name: name,
                                 image: [],
-                                text: ""
+                                text: "",
+                                color: color,
+                                declination: declination
                             }
                         ]
                     }]
@@ -66,23 +61,39 @@ const lib_logic = (() => {
                 }
             });
 
-            // console.log(data);
+        };
 
-            // chrome.storage.sync.set({'lib_user_data': data}, function() {
-            //     console.log('Value is set to ' + data);
-            // });  
+        async list_person_async() {
 
+
+            return new Promise((resolve, reject) => {
+                chrome.storage.sync.get(['lib_user_data'], (result) => {
+
+                    if (chrome.runtime.lastError) {
+                        return reject(chrome.runtime.lastError);
+                    }
+
+                    resolve(result);
+                });
+                
+            })
+                
         };
 
     };
 
-    let new_person = (name) => {
-        return new lib_logic_class().new_person(name);
+    const new_person = (name, color, declination) => {
+        return new lib_logic_class().new_person_async(name, color, declination);
     };
+
+    const list_person = () => {
+        return new lib_logic_class().list_person_async();
+    }
 
 
     return {
-        new_person: new_person
+        new_person: new_person,
+        list_person: list_person
     };
 
 })();
