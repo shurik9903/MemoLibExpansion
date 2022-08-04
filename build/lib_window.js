@@ -7,20 +7,32 @@ const person_lib_view = (() => {
 
     //Имя персонажа
     let name_container = document.createElement("div");
-    name_container.className = "lib_container";
+    name_container.className = "lib_container lib_name_container";
 
     let name_text = document.createElement("div");
     name_text.className = "lib_container_text";
     name_text.innerText = "Имя";
 
-    let name = document.createElement("div");
+    let person = document.createElement("div");
+    person.className = "lib_person";
+
+    let name = document.createElement("input");
     name.className = "lib_name";
 
-    [name_text, name].forEach(e => name_container.appendChild(e));
+    let color_pick = document.createElement("input");
+    color_pick.className = "lib_input_color";
+    color_pick.type = "color";
+
+    color_pick.onchange = (e) => 
+        name.style.color = e.target.value;
+
+    [name, color_pick].forEach(e => person.appendChild(e));
+
+    [name_text, person].forEach(e => name_container.appendChild(e));
 
     //Изображения
     let image_container = document.createElement("div");
-    image_container.className = "lib_container";
+    image_container.className = "lib_container lib_image_container";
 
     let image_text = document.createElement("div");
     image_text.className = "lib_container_text";
@@ -33,20 +45,37 @@ const person_lib_view = (() => {
 
     //Текст
     let text_container = document.createElement("div");
-    text_container.className = "lib_container";
+    text_container.className = "lib_container lib_text_container";
 
     let text_text = document.createElement("div");
     text_text.className = "lib_container_text";
     text_text.innerText = "Описание";
 
-    let text = document.createElement("div");
+    let text = document.createElement("textarea");
     text.className = "lib_text";
 
     [text_text, text].forEach(e => text_container.appendChild(e));
 
-    [name_container, image_container, text_container].forEach(e => view_name.appendChild(e));
+    let save_button = document.createElement("div");
+    save_button.className = "lib_save_button";
+    save_button.innerText = "Сохранить";
 
-    const show = () => {
+    save_button.onclick = () => {
+
+    };
+
+    [name_container, image_container, text_container, save_button].forEach(e => view_name.appendChild(e));
+
+    const show = (person_data) => {
+
+        name.value = person_data.person_name;
+        name.style.color = person_data.color;
+        color_pick.value = person_data.color;
+
+        person_data.image.forEach(e => { image.appendChild(`<img width="100" height="200" src=${e}>`) });
+        
+        text.innerText = person_data.text;
+
         return view_name;
     };
 
@@ -62,7 +91,7 @@ const list_view = (() => {
     let view_list = document.createElement("div");
     view_list.className = "lib_view_list"; 
 
-    const show = () => {
+    const show = (view) => {
 
         lib_logic.list_person().then(result => {
 
@@ -88,9 +117,32 @@ const list_view = (() => {
 
                 let person_container = document.createElement("div");
                 person_container.className = "lib_person_container";
-                person_container.innerText = data.person_name;
-                person_container.style.color = data.color;
-        
+                
+
+                let name = document.createElement("div");
+                name.className = "lib_list_name";
+                name.innerText = data.person_name;
+                name.style.color = data.color;
+
+                let delete_button = document.createElement("div");
+                delete_button.className = "lib_delete_button";
+
+                const img = document.createElement('img');
+                img.src = chrome.runtime.getURL('images/63481.png');
+                document.body.append(img);
+
+                delete_button.appendChild(img)
+                
+
+                console.log(delete_button.image);
+
+                [name, delete_button].forEach(e => person_container.appendChild(e));
+
+                name.onclick = () => {
+                    view.innerHTML = '';
+                    view.appendChild(person_lib_view.show(data));
+                }
+
                 view_list.appendChild(person_container);
             })
 
@@ -123,7 +175,7 @@ const add_person_view = (() => {
 
     let color_text = document.createElement("div");
     color_text.className = "lib_text_add";
-    color_text.innerText = "Задайте цвет персонажа (если цвет не будет выбран, то будет выбран случайный цвет)";
+    color_text.innerText = "Задайте цвет персонажа";
 
     let color_pick = document.createElement("input");
     color_pick.className = "lib_input_color";
@@ -216,7 +268,7 @@ const inject_window = (() => {
 
         view.innerHTML = '';
 
-        view.appendChild(list_view.show());
+        view.appendChild(list_view.show(view));
     }
 
     menu.appendChild(B_Add);

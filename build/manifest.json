@@ -32,7 +32,7 @@
     ],
     "web_accessible_resources": [
         {
-            "resources": [ "lib_window.js", "lib_logic.js" ],
+            "resources": [ "lib_window.js", "lib_logic.js", "images/63481.png" ],
             "matches": [ "https://ranobelib.me/*" ]
         }
      ]

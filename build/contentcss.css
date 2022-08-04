@@ -15,8 +15,6 @@
     min-width: 30%;
     max-width: 30%;
 
-
-
     padding: 0.25%;
 
     color: black;
@@ -63,10 +61,10 @@
     border: 3px solid rgba(41, 41, 41, 0.7);
 
     min-width: 96%;
-    min-height: 20%;
+    min-height: 10%;
 
     max-width: 96%;
-    max-height: 20%;
+    max-height: 10%;
 
 }
 
@@ -93,8 +91,8 @@
 .lib_button:hover {
 
     cursor: pointer;
+    background-color: rgba(100, 100, 100, 0.8);
 
-    background-color: rgba(255, 50, 50, 0.8);
 }
 
 .lib_view {
@@ -110,7 +108,10 @@
     padding: 1%;
 
     min-width: 96%;
-    min-height: 74%;
+    min-height: 84%;
+
+    max-width: 96%;
+    max-height: 84%;
 
     overflow: auto;
 
@@ -150,33 +151,41 @@
 
 }
 
-.lib_name {
+.lib_person {
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    justify-content: space-between;
 
     color: black;
 
-    /* min-width: 98%;
-    min-height: 10%; */
+    padding: 0 0 0 1%;
 
     border-radius: 3px;
     border: 2px solid rgba(41, 41, 41, 0.7);
-}
 
+}
 
 .lib_image {
 
-    /* min-width: 98%;
-    min-height: 10%; */
-
     border-radius: 3px;
     border: 2px solid rgba(41, 41, 41, 0.7);
 
 }
 
+.lib_text_container {
+
+    height: 50%;
+
+}
 
 .lib_text {
 
-    /* min-width: 98%;
-    min-height: 10%; */
+    height: 100%;
+
+    resize: none;
 
     border-radius: 3px;
     border: 2px solid rgba(41, 41, 41, 0.7);
@@ -225,14 +234,12 @@
     min-width: 100%;
     min-height: 100%;
 
-    max-width: 100%;
-    max-height: 100%;
-
     overflow: auto;
 
 }
 
 .lib_button_add {
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -261,7 +268,7 @@
 
     padding: 2%;
 
-    gap: 5%;
+    gap: 2%;
 
     min-width: 100%;
     min-height: 100%;
@@ -275,7 +282,12 @@
     min-width: 98%;
     min-height: 10%;
 
-    padding: 0 0 0 2%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 2% 0 0;
 
     font-size: 20px;
     font-weight: bold;
@@ -288,11 +300,50 @@
     background-color: rgba(72, 72, 72, 0.8);
 }
 
-.lib_person_container:hover {
 
-    cursor: pointer;
+.lib_list_name {
+
+    display: flex;
+    justify-content: left;
+    align-items: center;
+
+    padding: 0 0 0 2%;
+
     background-color: rgba(100, 100, 100, 0.8);
 
+    width: 90%;
+    height: 100%;
+
+}
+
+.lib_list_name:hover {
+
+    cursor: pointer;
+    background-color: rgba(72, 72, 72, 0.8);
+
+}
+
+
+
+.lib_delete_button {
+
+    height: 90%;
+    width: 12%;
+
+    background-color: rgba(100, 0, 0, 0.8);
+
+}
+
+.lib_delete_button:hover {
+
+    cursor: pointer;
+    background-color: rgba(248, 7, 7, 0.8);
+
+}
+
+.lib_delete_button img {
+    width: 100%;
+    height: 100%;
 }
 
 .lib_check_conteiner {
@@ -308,4 +359,32 @@
 
     white-space: nowrap;
 
+}
+
+.lib_save_button {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 16px;
+
+    background-color: rgba(72, 72, 72, 0.8);
+
+    padding: 10px;
+
+    height: 6%;
+
+}
+
+.lib_save_button:hover {
+
+    cursor: pointer;
+    background-color: rgba(100, 100, 100, 0.8);
+    
+}
+
+.lib_input_color {
+    background-color: rgba(255, 255, 255, 0);
+    border: none;
 }
