@@ -2,6 +2,9 @@ import {lib_logic} from "./lib_logic.js";
 
 const person_lib_view = (() => {
 
+    let old_name = "";
+    let declination;
+
     let view_name = document.createElement("div");
     view_name.className = "lib_view_name";
 
@@ -56,19 +59,40 @@ const person_lib_view = (() => {
 
     [text_text, text].forEach(e => text_container.appendChild(e));
 
+    let view_menu_container = document.createElement("div");
+    view_menu_container.className = "lib_view_menu_container";
+
+    let back_button = document.createElement("div");
+    back_button.className = "lib_back_button";
+    back_button.innerText = "Назад";
+
     let save_button = document.createElement("div");
     save_button.className = "lib_save_button";
     save_button.innerText = "Сохранить";
 
     save_button.onclick = () => {
 
+        let new_data = {
+            person_name: name.value,
+            image: [],
+            text: text.value,
+            color: color_pick.value,
+            declination: declination
+        };
+
+        lib_logic.save_person_data(name.value, new_data)
     };
 
-    [name_container, image_container, text_container, save_button].forEach(e => view_name.appendChild(e));
+    [save_button, back_button].forEach(e => view_menu_container.appendChild(e));
 
-    const show = (person_data) => {
+    [name_container, image_container, text_container, view_menu_container].forEach(e => view_name.appendChild(e));
 
-        name.value = person_data.person_name;
+    const show = (person_data, back_callback) => {
+
+        old_name = person_data.person_name;
+        declination = person_data.declination;
+
+        name.value = old_name;
         name.style.color = person_data.color;
         color_pick.value = person_data.color;
 
@@ -76,11 +100,14 @@ const person_lib_view = (() => {
         
         text.innerText = person_data.text;
 
+        back_button.onclick = back_callback;
+
         return view_name;
     };
 
     return {
         show: show
+        
     };
 
 })();
@@ -131,16 +158,16 @@ const list_view = (() => {
                 img.src = chrome.runtime.getURL('images/63481.png');
                 document.body.append(img);
 
-                delete_button.appendChild(img)
-                
-
-                console.log(delete_button.image);
+                delete_button.appendChild(img);
 
                 [name, delete_button].forEach(e => person_container.appendChild(e));
 
                 name.onclick = () => {
                     view.innerHTML = '';
-                    view.appendChild(person_lib_view.show(data));
+                    view.appendChild(person_lib_view.show(data, () => {
+                        view.innerHTML = '';
+                        view.appendChild(list_view.show(view));
+                    }));
                 }
 
                 view_list.appendChild(person_container);
@@ -277,6 +304,14 @@ const inject_window = (() => {
     basic.appendChild(view);
 
     document.body.appendChild(window);
+
+    let t = () => {return "qwe"};
+
+    return {
+        get_view: view,
+        person_lib_view: person_lib_view.show,
+        list_view: list_view.show
+    }
 })();
 
 export {inject_window};

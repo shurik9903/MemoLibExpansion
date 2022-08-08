@@ -7,7 +7,7 @@ console.log("Start Lib");
 
     //Импорт модуля меню библиотеки
     const lib_src = chrome.runtime.getURL("lib_window.js");
-    const lib = await import(lib_src);
+    const lib = (await import(lib_src)).inject_window;
 
     //Импорт модуля логики
     const lib_logic_src = chrome.runtime.getURL("lib_logic.js");
@@ -36,6 +36,8 @@ console.log("Start Lib");
         }
     )
 
+    console.log(all_person);
+
     let reader = document.getElementsByClassName("reader");
     let reader_container = document.getElementsByClassName("reader-container");
 
@@ -51,6 +53,8 @@ console.log("Start Lib");
 
         if (all_person)
             all_person.forEach(person => {
+
+                // console.log(person);
                 
                 let reg;
 
@@ -61,9 +65,55 @@ console.log("Start Lib");
 
                 new_div.innerHTML = new_div.innerHTML.replaceAll(reg, 
                     match => {
-                        return `<div style="color:${person.color};" class="text" name="${match}">${match}</div>`;
+
+                        let person_div = document.createElement("div");
+                        person_div.style.color = person.color;
+                        person_div.className = "text";
+                        person_div.setAttribute("name", match);
+                        person_div.innerText = match;
+                        // person_div.onclick = () => {console.log("Test")}
+                        
+                        
+
+                        // let f = () => {
+                        //     console.log("test");
+                            
+                        //     let view = lib.view;
+
+                        //     view.innerHTML = '';
+                        //     view.appendChild(lib.person_lib_view.show(person, () => {
+                        //         view.innerHTML = '';
+                        //         view.appendChild(lib.list_view.show(view));
+                        //     }));
+                        // }
+
+                        // person_div.setAttribute("onclick", "f()");
+
+                        // return `<div style="color:${person.color};" class="text" name="${match}">${match}</div>`;
+                        return person_div.outerHTML;
+                    });
+                    
+                let all_person_div = new_div.querySelectorAll(".text[name]");
+
+                // console.log(all_person_div);
+
+                if (all_person_div.length != 0)
+                    all_person_div.forEach(person_div => {
+                        person_div.onclick = () => {
+
+                            let view = lib.get_view;
+
+                            view.innerHTML = '';
+                            view.appendChild(lib.person_lib_view(person, () => {
+                                view.innerHTML = '';
+                                view.appendChild(lib.list_view(view));
+                            }));
+                        }
+                        console.log(person);
                     })
             });
+
+        
         
         new_reader_container.appendChild(new_div);
     });
