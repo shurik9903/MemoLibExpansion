@@ -12,6 +12,7 @@ const person_lib_view = (() => {
     let name_container = document.createElement("div");
     name_container.className = "lib_container lib_name_container";
 
+
     let name_text = document.createElement("div");
     name_text.className = "lib_container_text";
     name_text.innerText = "Имя";
@@ -31,7 +32,19 @@ const person_lib_view = (() => {
 
     [name, color_pick].forEach(e => person.appendChild(e));
 
-    [name_text, person].forEach(e => name_container.appendChild(e));
+    let other_name_text = document.createElement("div");
+    other_name_text.className = "lib_container_text";
+    other_name_text.innerText = "Другие имена";
+
+    let other_person = document.createElement("div");
+    other_person.className = "lib_other_person";
+
+    let other_name = document.createElement("input");
+    other_name.className = "lib_other_name";
+
+    other_person.appendChild(other_name);
+
+    [name_text, person, other_name_text, other_person].forEach(e => name_container.appendChild(e));
 
     //Изображения
     let image_container = document.createElement("div");
@@ -70,10 +83,24 @@ const person_lib_view = (() => {
     save_button.className = "lib_save_button";
     save_button.innerText = "Сохранить";
 
+
     save_button.onclick = () => {
+
+        console.log(other_name.value.split(','))
+        
+        if (name.value.length == 0 || name.value.trim().length == 0)
+            return;
+
+        let all_other_name = [];
+        
+        other_name.value.split(',').forEach(e => {
+            if (!(e.length == 0 || e.trim().length == 0))
+                all_other_name.push(e);
+        })   
 
         let new_data = {
             person_name: name.value,
+            other_name: all_other_name,
             image: [],
             text: text.value,
             color: color_pick.value,
@@ -96,9 +123,11 @@ const person_lib_view = (() => {
         name.style.color = person_data.color;
         color_pick.value = person_data.color;
 
+        other_name.value = person_data.other_name.toString()
+
         person_data.image.forEach(e => { image.appendChild(`<img width="100" height="200" src=${e}>`) });
-        
-        text.innerText = person_data.text;
+
+        text.value = person_data.text;
 
         back_button.onclick = back_callback;
 

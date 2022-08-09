@@ -127,7 +127,7 @@
 
     padding: 2%;
 
-    gap: 5%;
+    gap: 1%;
 
     min-width: 100%;
     min-height: 100%;
@@ -151,7 +151,7 @@
 
 }
 
-.lib_person {
+.lib_person, .lib_other_person {
 
     display: flex;
     flex-direction: row;
@@ -161,12 +161,17 @@
 
     color: black;
 
-    padding: 0 0 0 1%;
+    padding: 1%;
 
     border-radius: 3px;
     border: 2px solid rgba(41, 41, 41, 0.7);
 
 }
+
+.lib_other_name {
+    width: 100%;
+}
+
 
 .lib_image {
 
@@ -416,4 +421,16 @@
 .lib_input_color {
     background-color: rgba(255, 255, 255, 0);
     border: none;
+}
+
+.lib_name {
+
+    width: 90%;
+
+}
+
+.lib_input_color {
+
+    width: 10%;
+
 }

@@ -56,6 +56,7 @@ const lib_logic = (() => {
                             element.title_data.push(
                                 {
                                     person_name: name,
+                                    other_name: [],
                                     image: [],
                                     text: "",
                                     color: color,
@@ -78,6 +79,7 @@ const lib_logic = (() => {
                         title_data: [
                             {
                                 person_name: name,
+                                other_name: [],
                                 image: [],
                                 text: "",
                                 color: color,

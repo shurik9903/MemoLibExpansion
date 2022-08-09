@@ -36,8 +36,6 @@ console.log("Start Lib");
         }
     )
 
-    console.log(all_person);
-
     let reader = document.getElementsByClassName("reader");
     let reader_container = document.getElementsByClassName("reader-container");
 
@@ -54,69 +52,66 @@ console.log("Start Lib");
         if (all_person)
             all_person.forEach(person => {
 
-                // console.log(person);
                 
-                let reg;
 
-                if (person.declination)
-                    reg = new RegExp(`${person.person_name}?([ыейуаиляью]|ой|ёй|ью)`,'gi');
-                else
-                    reg = new RegExp(`${person.person_name}`,'gi');
+                [...person.other_name, person.person_name].forEach(all_name => {
 
-                new_div.innerHTML = new_div.innerHTML.replaceAll(reg, 
-                    match => {
+                    let reg;
 
-                        let person_div = document.createElement("div");
-                        person_div.style.color = person.color;
-                        person_div.className = "text";
-                        person_div.setAttribute("name", match);
-                        person_div.innerText = match;
-                        // person_div.onclick = () => {console.log("Test")}
-                        
-                        
+                    if (person.declination)
+                        reg = new RegExp(`[^name="]${all_name}?([ыейуаиляью]|ой|ёй|ью)`,'gi');
+                    else
+                        reg = new RegExp(`[^name="]${all_name}`,'gi');
 
-                        // let f = () => {
-                        //     console.log("test");
-                            
-                        //     let view = lib.view;
+                    new_div.innerHTML = new_div.innerHTML.replaceAll(reg, 
+                        match => {
 
-                        //     view.innerHTML = '';
-                        //     view.appendChild(lib.person_lib_view.show(person, () => {
-                        //         view.innerHTML = '';
-                        //         view.appendChild(lib.list_view.show(view));
-                        //     }));
-                        // }
+                            let person_div = document.createElement("div");
+                            person_div.style.color = person.color;
+                            person_div.className = "text";
+                            person_div.setAttribute("name", person.person_name);
+                            person_div.innerText = match;
 
-                        // person_div.setAttribute("onclick", "f()");
+                            return person_div.outerHTML;
+                        });
+                });
+            });
 
-                        // return `<div style="color:${person.color};" class="text" name="${match}">${match}</div>`;
-                        return person_div.outerHTML;
-                    });
-                    
-                let all_person_div = new_div.querySelectorAll(".text[name]");
+                
 
-                // console.log(all_person_div);
+        new_reader_container.appendChild(new_div);
+    
+    });
 
-                if (all_person_div.length != 0)
-                    all_person_div.forEach(person_div => {
+    let all_person_div = new_reader_container.querySelectorAll(".text[name]");
+
+    if (all_person_div.length != 0)
+        all_person_div.forEach(person_div => {
+            all_person.forEach(person => {
+                
+                    let reg;
+
+                    if (person.declination)
+                        reg = new RegExp(`${person.person_name}?([ыейуаиляью]|ой|ёй|ью)`,'gi');
+                    else
+                        reg = new RegExp(`${person.person_name}`,'gi');
+
+                    if (reg.test(person_div.getAttribute("name"))){
+
                         person_div.onclick = () => {
 
                             let view = lib.get_view;
-
+        
                             view.innerHTML = '';
                             view.appendChild(lib.person_lib_view(person, () => {
                                 view.innerHTML = '';
                                 view.appendChild(lib.list_view(view));
                             }));
-                        }
-                        console.log(person);
-                    })
-            });
+                        };
 
-        
-        
-        new_reader_container.appendChild(new_div);
-    });
+                    };
+            })
+        })
 
     let basic_div = document.createElement("div");
     basic_div.className = "basic_div";
@@ -133,7 +128,6 @@ console.log("Start Lib");
     }
 
 })();
-
 
 // /([A-zА-яЁё] +) (я|ей|ов|а|ы|и|у|ю)/g
 // '\b(апр(?:ел(?:[ьяюе]|ем)?)?|apr(?:il)?|04)\b'
