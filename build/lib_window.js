@@ -1,5 +1,7 @@
 import {lib_logic} from "./lib_logic.js";
 
+let collapse;
+
 const person_lib_view = (() => {
 
     let old_name = "";
@@ -85,8 +87,6 @@ const person_lib_view = (() => {
 
 
     save_button.onclick = () => {
-
-        console.log(other_name.value.split(','))
         
         if (name.value.length == 0 || name.value.trim().length == 0)
             return;
@@ -115,6 +115,7 @@ const person_lib_view = (() => {
     [name_container, image_container, text_container, view_menu_container].forEach(e => view_name.appendChild(e));
 
     const show = (person_data, back_callback) => {
+        collapse(true);
 
         old_name = person_data.person_name;
         declination = person_data.declination;
@@ -149,6 +150,8 @@ const list_view = (() => {
 
     const show = (view) => {
 
+        collapse(true);
+
         lib_logic.list_person().then(result => {
 
             view_list.innerHTML = ''; 
@@ -182,6 +185,13 @@ const list_view = (() => {
 
                 let delete_button = document.createElement("div");
                 delete_button.className = "lib_delete_button";
+
+                delete_button.onclick = () => {
+                    lib_logic.delete_person_data(name.innerText).then(result => {
+                        view.innerHTML = '';
+                        view.appendChild(list_view.show(view))
+                    })
+                };
 
                 const img = document.createElement('img');
                 img.src = chrome.runtime.getURL('images/63481.png');
@@ -265,9 +275,16 @@ const add_person_view = (() => {
     [text, input, color_text, color_pick, check_conteiner, add].forEach(e => view_add.appendChild(e));
 
     const show = () => {
+        
+        collapse(true);
+
+        input.value = '';
 
         let randomColor = Math.floor(Math.random()*16777215).toString(16);
         color_pick.value = "#" + randomColor;
+
+        check_declination.checked = false;
+
 
         return view_add;
     };
@@ -286,12 +303,36 @@ const inject_window = (() => {
     //Внешнее Окно
     let window = document.createElement("div");
     window.className = "lib_window";
-    
+
     //Внутренее базовое окно
     let basic = document.createElement("div");
     basic.className = "lib_basic";
+    basic.setAttribute("collapse", true);
+    basic.style.maxWidth = null;
 
-    window.appendChild(basic);
+    let collapse_button = document.createElement("div");
+    collapse_button.className = "lib_collapse";
+    collapse_button.innerText = '\u2770';
+
+    collapse = (visible) => {
+
+        let reader_container = document.getElementsByClassName("reader-container")[0];
+
+        if (!visible) {
+            collapse_button.innerHTML = '\u2770';
+            basic.setAttribute("collapse", true);
+            reader_container.setAttribute("lib", false);
+        } else {
+            collapse_button.innerHTML = '\u2771';
+            basic.setAttribute("collapse", false);
+            reader_container.setAttribute("lib", true);
+        }
+    }
+
+    collapse_button.onclick = () => {collapse(basic.getAttribute("collapse") == 'true')}
+    
+
+    [collapse_button, basic].forEach(e => window.appendChild(e));
 
     //Меню
     let menu = document.createElement("div");
@@ -344,3 +385,13 @@ const inject_window = (() => {
 })();
 
 export {inject_window};
+
+// const Collapse = (event) => {
+//     if (Bar_Width) {
+//         event.target.innerHTML = '\u2771';
+//         setBar_Width(null);
+//     } else {
+//         event.target.innerHTML = '\u2770';
+//         setBar_Width(`100%`);
+//     }
+// };

@@ -2,58 +2,116 @@ const lib_logic = (() => {
 
     class lib_logic_class {
 
-        async save_person_data_async(name, new_data){
+        async delete_person_data_async(name){
+            return new Promise((resolve, reject) => {
+                let data = [];
 
-            let data = [];
+                let title_name = document.getElementsByClassName("reader-header-action__title")[0].innerText;
 
-            let title_name = document.getElementsByClassName("reader-header-action__title")[0].innerText;
+                chrome.storage.sync.get(['lib_user_data'], function(result) {
+                    if (result && result.lib_user_data && result.lib_user_data.length != 0){
 
-            chrome.storage.sync.get(['lib_user_data'], function(result) {
-                if (result && result.lib_user_data && result.lib_user_data.length != 0){
+                        data = result.lib_user_data;
 
-                    data = result.lib_user_data;
+                        for (let element of data){
+                            if (element.title_name == title_name && element.title_data){
 
-                    for (let element of data){
-                        if (element.title_name == title_name && element.title_data){
+                                let index = element.title_data.findIndex(person => {
+                                    return person.person_name == name;
+                                });
 
-                            let index = element.title_data.findIndex(person => {
-                                return person.person_name == name;
-                            });
+                                if (index >= 0)
+                                    element.title_data.splice(index, 1);
 
-                            if (index >= 0)
-                                element.title_data[index] = new_data;
-
-                            break;
+                                break;
+                            }
                         }
+
+                        chrome.storage.sync.set({'lib_user_data': data}, function() {
+                            resolve(data);
+                        }); 
+
                     }
-
-                    chrome.storage.sync.set({'lib_user_data': data}, function() {
-                        console.log('Value is set to ' + data);
-                    }); 
-
-                }
+                });
             });
+        }
 
+        async save_person_data_async(name, new_data){
+            return new Promise((resolve, reject) => {
+                let data = [];
+
+                let title_name = document.getElementsByClassName("reader-header-action__title")[0].innerText;
+
+                chrome.storage.sync.get(['lib_user_data'], function(result) {
+                    if (result && result.lib_user_data && result.lib_user_data.length != 0){
+
+                        data = result.lib_user_data;
+
+                        for (let element of data){
+                            if (element.title_name == title_name && element.title_data){
+
+                                let index = element.title_data.findIndex(person => {
+                                    return person.person_name == name;
+                                });
+
+                                if (index >= 0)
+                                    element.title_data[index] = new_data;
+
+                                break;
+                            }
+                        }
+
+                        chrome.storage.sync.set({'lib_user_data': data}, function() {
+                            resolve(data);
+                        }); 
+
+                    }
+                });
+            });
         }
 
         async new_person_async(name, color, declination) {
-            let data = [];
-            
-            let title_name = document.getElementsByClassName("reader-header-action__title")[0].innerText;
+            return new Promise((resolve, reject) => {
+                let data = [];
+                
+                let title_name = document.getElementsByClassName("reader-header-action__title")[0].innerText;
 
-            chrome.storage.sync.get(['lib_user_data'], function(result) {
-                if (result && result.lib_user_data && result.lib_user_data.length != 0){
+                chrome.storage.sync.get(['lib_user_data'], function(result) {
+                    if (result && result.lib_user_data && result.lib_user_data.length != 0){
 
-                    data = result.lib_user_data;
+                        data = result.lib_user_data;
 
-                    for (let element of data){
-                        if (element.title_name == title_name && element.title_data){
+                        for (let element of data){
+                            if (element.title_name == title_name && element.title_data){
 
-                            if (element.title_data.find(find_element => {
-                                return find_element.person_name == name;
-                            })) break ;
+                                if (element.title_data.find(find_element => {
+                                    return find_element.person_name == name;
+                                })) break ;
 
-                            element.title_data.push(
+                                element.title_data.push(
+                                    {
+                                        person_name: name,
+                                        other_name: [],
+                                        image: [],
+                                        text: "",
+                                        color: color,
+                                        declination: declination
+                                    }
+                                );
+                            }
+
+                            chrome.storage.sync.set({'lib_user_data': data}, function() {
+                                resolve(data);
+                            });  
+
+                            break ;
+                        }
+
+                    } else {
+
+                        data = [{
+                            title_name: title_name,
+                            title_data: [
                                 {
                                     person_name: name,
                                     other_name: [],
@@ -62,38 +120,17 @@ const lib_logic = (() => {
                                     color: color,
                                     declination: declination
                                 }
-                            );
-                        }
+                            ]
+                        }]
 
                         chrome.storage.sync.set({'lib_user_data': data}, function() {
-                            console.log('Value is set to ' + data);
+                            resolve(data);
                         });  
-
-                        break ;
                     }
+                });
 
-                } else {
-
-                    data = [{
-                        title_name: title_name,
-                        title_data: [
-                            {
-                                person_name: name,
-                                other_name: [],
-                                image: [],
-                                text: "",
-                                color: color,
-                                declination: declination
-                            }
-                        ]
-                    }]
-
-                    chrome.storage.sync.set({'lib_user_data': data}, function() {
-                        console.log('Value is set to ' + data);
-                    });  
-                }
+                
             });
-
         };
 
         async list_person_async() {
@@ -106,7 +143,7 @@ const lib_logic = (() => {
 
                     resolve(result);
                 });
-            })
+            });
         };
     };
 
@@ -122,11 +159,16 @@ const lib_logic = (() => {
         return new lib_logic_class().save_person_data_async(name, new_data);
     }
 
+    const delete_person_data = (name) => {
+        return new lib_logic_class().delete_person_data_async(name);
+    }
+
 
     return {
         new_person: new_person,
         list_person: list_person,
-        save_person_data: save_person_data
+        save_person_data: save_person_data,
+        delete_person_data: delete_person_data
     };
 
 })();

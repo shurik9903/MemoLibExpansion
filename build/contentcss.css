@@ -1,10 +1,15 @@
 .basic_div {
     display: flex;
     flex-direction: row;
+    width: 100%;
 }
 
 .lib_window {
     position: fixed;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
 
     top: 60px;
     bottom: 60px;
@@ -19,10 +24,33 @@
 
     color: black;
 
-    border-radius: 5px;
+    /* border-radius: 5px;
 
     background-color: rgba(0, 0, 0, 0.7);
-    box-shadow: 0 0 3px 1px rgb(255, 255, 255), 0 0 5px 5px rgb(88, 88, 88), 0 0 8px 6px rgb(255, 255, 255);
+    box-shadow: 0 0 3px 1px rgb(255, 255, 255), 0 0 5px 5px rgb(88, 88, 88), 0 0 8px 6px rgb(255, 255, 255); */
+}
+
+.lib_collapse {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    height: 25%;
+    min-width: 10px;
+
+    border-radius: 5px;
+
+    background-color: rgba(148, 148, 148, 0.7);
+
+    user-select: none;
+}
+
+.lib_collapse:hover {
+
+    cursor: pointer;
+    background-color: rgba(230, 230, 230, 0.7);
+
 }
 
 .lib_basic {
@@ -34,22 +62,38 @@
 
     background-color: rgba(41, 41, 41, 0.7);
 
-    width: 100%;
     height: 100%;
+    width: 100%;
+    max-width: 0;
 
+    
+    transition: max-width 0.2s ease-out;
+    
+    
     border: 2px solid rgba(176, 176, 176, 0.7);
     border-radius: 5px;
+
+}
+
+.lib_basic[collapse = true] {
+
+    max-width: 0;
+    visibility: hidden;
+
+}
+
+.lib_basic[collapse = false] {
+    
+    max-width: 100%;
+    visibility: visible;
 
 }
 
 .lib_menu {
 
     display: flex;
-    flex-direction: row;    
+    flex-direction: row;
     flex-wrap: nowrap;
-    
-    overflow-y: hidden;
-    overflow-x: auto;
     
     align-items: center;
     
@@ -60,31 +104,39 @@
     border-radius: 5px;
     border: 3px solid rgba(41, 41, 41, 0.7);
 
-    min-width: 96%;
-    min-height: 10%;
+    width: 98%;
+    min-width: 0;
+    max-width: 100%;
 
-    max-width: 96%;
+    height: 10%;
     max-height: 10%;
 
 }
 
 .lib_button {
+    
 
     display: flex;
     justify-content: center;
     align-items: center;
 
+    overflow: hidden;
+
     flex: 1 1 auto;
     
     margin: 2%;
-
-    padding: 0;
 
     font-size: 20px;
 
     background-color: rgba(72, 72, 72, 0.8);
 
     height: 90%;
+    width: 50%;
+    min-width: 0;
+
+    word-wrap: break-word;
+
+    user-select: none;
 
 }
 
@@ -99,7 +151,8 @@
 
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+
+    align-content: flex-start;
     align-items: center;
 
     border-radius: 5px;
@@ -107,11 +160,9 @@
 
     padding: 1%;
 
-    min-width: 96%;
-    min-height: 84%;
-
-    max-width: 96%;
-    max-height: 84%;
+    height: 100%;
+    min-height: 0;
+    width: 100%;
 
     overflow: auto;
 
@@ -212,9 +263,17 @@
     font-weight: bolder;
 }
 
-.container_center[lib = true] {
+.reader-container {
 
-    margin: 0 0 0 1%;
+    box-shadow: 0 0 3px 1px rgb(255, 255, 255), 0 0 5px 5px rgb(88, 88, 88), 0 0 14px 12px rgb(255, 255, 255); 
+
+}
+
+.reader-container[lib = true] {
+
+    margin: 0 33% 0 15%;
+    /* width: 67%;
+    max-width: 100% !important; */
 
 }
 
@@ -254,6 +313,7 @@
     background-color: rgba(72, 72, 72, 0.8);
 
     padding: 10px;
+    user-select: none;
 }
 
 .lib_button_add:hover {
@@ -336,7 +396,7 @@
     width: 12%;
 
     background-color: rgba(100, 0, 0, 0.8);
-
+    user-select: none;
 }
 
 .lib_delete_button:hover {
@@ -349,6 +409,7 @@
 .lib_delete_button img {
     width: 100%;
     height: 100%;
+    user-select: none;
 }
 
 .lib_check_conteiner {
@@ -389,6 +450,7 @@
 
     height: 10%;
     width: 50%;
+    user-select: none;
 
 }
 
