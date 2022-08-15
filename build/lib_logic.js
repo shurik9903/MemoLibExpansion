@@ -70,7 +70,7 @@ const lib_logic = (() => {
             });
         }
 
-        async new_person_async(name, color, declination) {
+        async new_person_async(name, color) {
             return new Promise((resolve, reject) => {
                 let data = [];
                 
@@ -94,8 +94,7 @@ const lib_logic = (() => {
                                         other_name: [],
                                         image: [],
                                         text: "",
-                                        color: color,
-                                        declination: declination
+                                        color: color
                                     }
                                 );
                             }
@@ -117,8 +116,7 @@ const lib_logic = (() => {
                                     other_name: [],
                                     image: [],
                                     text: "",
-                                    color: color,
-                                    declination: declination
+                                    color: color
                                 }
                             ]
                         }]
@@ -147,8 +145,8 @@ const lib_logic = (() => {
         };
     };
 
-    const new_person = (name, color, declination) => {
-        return new lib_logic_class().new_person_async(name, color, declination);
+    const new_person = (name, color) => {
+        return new lib_logic_class().new_person_async(name, color);
     };
 
     const list_person = () => {

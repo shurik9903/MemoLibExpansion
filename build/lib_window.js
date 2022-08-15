@@ -5,7 +5,6 @@ let collapse;
 const person_lib_view = (() => {
 
     let old_name = "";
-    let declination;
 
     let view_name = document.createElement("div");
     view_name.className = "lib_view_name";
@@ -104,7 +103,6 @@ const person_lib_view = (() => {
             image: [],
             text: text.value,
             color: color_pick.value,
-            declination: declination
         };
 
         lib_logic.save_person_data(name.value, new_data)
@@ -118,7 +116,6 @@ const person_lib_view = (() => {
         collapse(true);
 
         old_name = person_data.person_name;
-        declination = person_data.declination;
 
         name.value = old_name;
         name.style.color = person_data.color;
@@ -247,18 +244,18 @@ const add_person_view = (() => {
     color_pick.className = "lib_input_color";
     color_pick.type = "color";
 
-    let check_conteiner = document.createElement("div");
-    check_conteiner.className = "lib_check_conteiner";
+    // let check_conteiner = document.createElement("div");
+    // check_conteiner.className = "lib_check_conteiner";
 
-    let check_text = document.createElement("div");
-    check_text.className = "lib_check_text";
-    check_text.innerText = "Склоняемое имя:  ";
+    // let check_text = document.createElement("div");
+    // check_text.className = "lib_check_text";
+    // check_text.innerText = "Склоняемое имя:  ";
 
-    let check_declination = document.createElement("input");
-    check_declination.className = "lib_check_declination";
-    check_declination.type = "checkbox";
+    // let check_declination = document.createElement("input");
+    // check_declination.className = "lib_check_declination";
+    // check_declination.type = "checkbox";
 
-    [check_text, check_declination].forEach(e => check_conteiner.appendChild(e));
+    // [check_text, check_declination].forEach(e => check_conteiner.appendChild(e));
 
     let add = document.createElement("div");
     add.className = "lib_button_add";
@@ -268,11 +265,11 @@ const add_person_view = (() => {
         if (input.value.replace(/\s/g, '').length != 0 && /[А-яЁёA-Za-z0-9]/g.test(input.value) == true){
             console.log(`add ${input.value}`);
  
-            lib_logic.new_person(input.value, color_pick.value, check_declination.checked);
+            lib_logic.new_person(input.value, color_pick.value);
         }
     }
 
-    [text, input, color_text, color_pick, check_conteiner, add].forEach(e => view_add.appendChild(e));
+    [text, input, color_text, color_pick, add].forEach(e => view_add.appendChild(e));
 
     const show = () => {
         
@@ -283,7 +280,7 @@ const add_person_view = (() => {
         let randomColor = Math.floor(Math.random()*16777215).toString(16);
         color_pick.value = "#" + randomColor;
 
-        check_declination.checked = false;
+        // check_declination.checked = false;
 
 
         return view_add;
@@ -385,13 +382,3 @@ const inject_window = (() => {
 })();
 
 export {inject_window};
-
-// const Collapse = (event) => {
-//     if (Bar_Width) {
-//         event.target.innerHTML = '\u2771';
-//         setBar_Width(null);
-//     } else {
-//         event.target.innerHTML = '\u2770';
-//         setBar_Width(`100%`);
-//     }
-// };

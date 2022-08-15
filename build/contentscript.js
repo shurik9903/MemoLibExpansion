@@ -51,16 +51,10 @@ console.log("Start Lib");
         if (all_person)
             all_person.forEach(person => {
 
-
-
                 [...person.other_name, person.person_name].forEach(all_name => {
 
-                    let reg;
+                    let reg = new RegExp(`(?<!name=")${all_name}?(|[ыейуаиляью]|ой|ёй|ью)`,'gi');
 
-                    if (person.declination)
-                        reg = new RegExp(`(?<!name=")${all_name}?([ыейуаиляью]|ой|ёй|ью)`,'gi');
-                    else
-                        reg = new RegExp(`(?<!name=")${all_name}`,'gi');
 
                     new_div.innerHTML = new_div.innerHTML.replaceAll(reg, 
                         match => {
@@ -88,12 +82,8 @@ console.log("Start Lib");
         all_person_div.forEach(person_div => {
             all_person.forEach(person => {
                 
-                    let reg;
+                    let reg = new RegExp(`${person.person_name}?(|[ыейуаиляью]|ой|ёй|ью)`,'gi');
 
-                    if (person.declination)
-                        reg = new RegExp(`${person.person_name}?([ыейуаиляью]|ой|ёй|ью)`,'gi');
-                    else
-                        reg = new RegExp(`${person.person_name}`,'gi');
 
                     if (reg.test(person_div.getAttribute("name"))){
 
@@ -127,12 +117,6 @@ console.log("Start Lib");
     }
 
 })();
-
-// /([A-zА-яЁё] +) (я|ей|ов|а|ы|и|у|ю)/g
-// '\b(апр(?:ел(?:[ьяюе]|ем)?)?|apr(?:il)?|04)\b'
-
-
-
 
 
 
