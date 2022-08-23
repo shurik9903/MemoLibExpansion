@@ -105,7 +105,7 @@ const person_lib_view = (() => {
             color: color_pick.value,
         };
 
-        lib_logic.save_person_data(name.value, new_data)
+        lib_logic.save_person_data(old_name, new_data)
     };
 
     [save_button, back_button].forEach(e => view_menu_container.appendChild(e));
@@ -151,24 +151,11 @@ const list_view = (() => {
 
         lib_logic.list_person().then(result => {
 
+            console.log(result);
+            
             view_list.innerHTML = ''; 
 
-            let all_person = [];
-
-            let title_name = document.getElementsByClassName("reader-header-action__title")[0].innerText;
-            
-
-            if (result && result.lib_user_data && result.lib_user_data.length != 0){
-
-                let data = result.lib_user_data;
-
-                for (let element of data)
-                    if (element.title_name == title_name && element.title_data)
-                            all_person = element.title_data;
-                       
-            }
-
-            all_person.forEach((data) => {
+            result.forEach((data) => {
 
 
                 let person_container = document.createElement("div");
@@ -265,7 +252,7 @@ const add_person_view = (() => {
         if (input.value.replace(/\s/g, '').length != 0 && /[А-яЁёA-Za-z0-9]/g.test(input.value) == true){
             console.log(`add ${input.value}`);
  
-            lib_logic.new_person(input.value, color_pick.value);
+            lib_logic.new_person(input.value, color_pick.value).then(result => console.log(result));
         }
     }
 
