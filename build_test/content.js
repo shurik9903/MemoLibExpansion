@@ -11,173 +11,187 @@ console.log("Start Lib");
 // })();
 
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import ReactDOM from 'react-dom';
 // import "./content.css";
 
 // import {inject_window} from "./lib_window";
 import {lib_logic} from "./lib_logic";
 
-
-function person_div({children,name}) {
+const text_div = ({children}) => {
 
     return (
-        <div name={name}>
+        <div class={"text"}> 
+            {children}
+        </div>
+    )
+
+}
+
+const person_div = ({children, name}) => {
+
+    return (
+        <div name={name} class={"text"}>
             {children}
         </div>
     )
 }
 
-function app() {
+
+const text_block = ({children}) => {
+
+    const {getPersons} = useApp();
+
+    const [full_text, setFull_Text] = useState();
 
     useEffect(()=>{
 
-        console.log("basic::constructor");
+        let text = [React.createElement(text_div, {class:"text"}, children)];
+        let new_text_elements = [];
+
+
+        let all_person = [{
+            person_name: "Лейлин",
+            other_name: []
+            },
+            {
+                person_name: "Рынка Эллинель",
+                other_name: []
+            }
+        ]
+
+        if (all_person)
+            all_person.forEach(person => {
+
+                if (new_text_elements.length != 0)
+                    text = new_text_elements;
+
+                new_text_elements = [];
+
+                text.forEach(text_element => {
+
+                    if (text_element.props.name)
+                        new_text_elements.push(text_element);
+                    else {
+                        text_element = text_element.props.children;
+
+                        [...person.other_name, person.person_name].forEach(all_name => {
+
+                        let reg;
+
+                        let end_reg = `?(ер|ем|ой|ом|ёй|ью|[ыейуаиляью]|)`;
+
+
+                        all_name.split(' ').forEach((name, index) => {
+                            if (index == 0)
+                                reg = new RegExp(`${name}` + end_reg,'gi');
+                            else
+                                reg = new RegExp(reg.source + `(\\s${name}` + end_reg + `|)`,'gi');
+                        })
+
+                        let full_reg = new RegExp(`(?<!name=")` + reg.source,'gi');
+
+                        let find = text_element.matchAll(full_reg);
+
+                        let slice;
+                        let prev_person_last_index = 0;
+
+                        [...find].forEach(find_element => {
+
+                            slice = text_element.slice(prev_person_last_index, find_element.index);
+
+                            if (slice.length != 0)
+                                new_text_elements.push(React.createElement(text_div, {class:"text"}, slice));
+                            
+                            new_text_elements.push(React.createElement(person_div, {name:all_name}, find_element[0]));
+                            
+                            prev_person_last_index = find_element.index + find_element[0].length; 
+                        })
+
+                        slice = text_element.slice(prev_person_last_index);
+
+                        if (slice.length != 0)
+                                new_text_elements.push(React.createElement(text_div, {class:"text"}, slice));
+                        
+                    })
+                }
+
+            })
+        })
+
+        setFull_Text(new_text_elements);
+        
+    },[])
+
+    return (
+        <div class='text_block'>
+            {full_text}
+        </div>
+    )
+}
+
+const Text_child = document.getElementsByClassName("reader-container")[0].children;
+
+const AppContext = React.createContext();
+
+const useApp = () => {
+    return useContext(AppContext);
+}
+
+const app = () => {
+
+    const [child, setChild] = useState([]);
+    const [persons, setPersons] = useState([]);
+
+    useEffect(()=>{
+
+        console.log("app::constructor");
+
+        (async () => {
+            let all_person = [];
+
+            await lib_logic.list_person().then(result => { all_person = result }, error => {
+                    console.log(`Error data chrome get: ${error}`);
+                }
+            )
+
+            setPersons(all_person);
+        })();
+
+        Array.from(Text_child).forEach(element => {
+
+            let new_text_block = React.createElement(text_block, {}, element.innerText);
+
+            setChild(prev => [...prev, new_text_block])
+        });
+        
     },[]);
 
     return (
         <div class={"reader-container container container_center"} lib={false}>
-            tezr
+            <AppContext.Provider value={{
+                        getPersons: persons,
+                        setPersons: setPersons
+                    }}>
+                {child}
+            </AppContext.Provider>
         </div>
     );
 }
 
-(async () => {
+let reader = document.getElementsByClassName("reader");
+let reader_container = document.getElementsByClassName("reader-container");
 
-    // let all_person = [];
+if (reader && reader[0].children.length > 0 && 
+    reader_container && reader_container[0].children.length > 0){
 
-    // await lib_logic.list_person().then(result => {
-    
-    //     let title_name = document.getElementsByClassName("reader-header-action__title")[0].innerText;
-        
-    
-    //     if (result && result.lib_user_data && result.lib_user_data.length != 0){
-    
-    //         let data = result.lib_user_data;
-    
-    //         for (let element of data)
-    //             if (element.title_name == title_name && element.title_data)
-    //                     all_person = element.title_data;
-                   
-    //     }
+    reader = reader[0];
+    reader_container = reader_container[0];
 
-    //     }, error => {
-    //         console.log(`Error data chrome get: ${error}`);
-    //     }
-    // )
+    let basic_div = document.createElement("div");
+    basic_div.className = "basic_div";
+    reader.replaceChild(basic_div, reader_container);
+    ReactDOM.render(React.createElement(app, {}), basic_div);
 
-    let reader = document.getElementsByClassName("reader");
-    let reader_container = document.getElementsByClassName("reader-container");
-
-    // let new_reader_container = <new_reader_container/>
-    // new_reader_container.className = reader_container[0].className;
-
-    // let all_name_element = [];
-
-    // Array.from(reader_container[0].children).forEach(element => {
-
-    //     let new_div = document.createElement("div");
-    //     new_div.className = "text_block";
-    //     new_div.innerHTML = element.innerText;
-
-    //     if (all_person)
-    //         all_person.forEach(person => {
-
-    //             [...person.other_name, person.person_name].forEach(all_name => {
-
-    //                 let reg = new RegExp(`(?<!name=")${all_name}?(|[ыейуаиляью]|ой|ёй|ью)`,'gi');
-
-
-    //                 new_div.innerHTML = new_div.innerHTML.replaceAll(reg, 
-    //                     match => {
-
-    //                         let person_div = <person_div name={person.person_name} style={{color: person.color}}>{match}</person_div>;
-    //                         // person_div.style.color = person.color;
-    //                         // person_div.className = "text";
-    //                         // person_div.setAttribute("name", person.person_name);
-    //                         // person_div.innerText = match;
-
-    //                         return person_div.outerHTML;
-    //                     });
-    //             });
-    //         });
-
-                
-
-    //     all_name_element.push(new_div);
-    
-    // });
-
-    // let all_person_div = new_reader_container.querySelectorAll(".text[name]");
-
-    // if (all_person_div.length != 0)
-    //     all_person_div.forEach(person_div => {
-    //         all_person.forEach(person => {
-                
-    //                 let reg = new RegExp(`${person.person_name}?(|[ыейуаиляью]|ой|ёй|ью)`,'gi');
-
-
-    //                 if (reg.test(person_div.getAttribute("name"))){
-
-    //                     person_div.onclick = () => {
-
-    //                         let view = lib.get_view;
-        
-    //                         view.innerHTML = '';
-    //                         view.appendChild(lib.person_lib_view(person, () => {
-    //                             view.innerHTML = '';
-    //                             view.appendChild(lib.list_view(view));
-    //                         }));
-    //                     };
-
-    //                 };
-    //         })
-    //     })
-
-    // let basic_div = document.createElement("div");
-    // basic_div.className = "basic_div";
-
-
-
-    if (reader && reader[0].children.length > 0 && 
-        reader_container && reader_container[0].children.length > 0){
-
-        reader = reader[0];
-        reader_container = reader_container[0];
-        // reader_container = <basic_div/>;
-        // reader.removeChild(reader_container);
-
-        // console.log(all_name_element);
-
-        let basic_div = document.createElement("div");
-        basic_div.className = "basic_div";
-        reader.replaceChild(basic_div, reader_container);
-        ReactDOM.render(React.createElement(app, {}), basic_div);
-
-        // ReactDOM.render(<basic_div>
-        //     {all_name_element}
-        // </basic_div>, reader_container);
-        // reader.replaceChild(<basic_div/>, reader_container);
-
-        // basic_div.appendChild(new_reader_container);
-    }
-
-})()
-
-
-// class Main extends React.Component {
-//     render() {
-//         return (
-//             <div className={'my-extension'}>
-//                 <h1>Hello world - My first Extension</h1>
-//             </div>
-//         )
-//     }
-// }
-
-// const app = document.createElement('div');
-// app.id = "my-extension-root";
-// document.body.appendChild(app);
-// ReactDOM.render(<Main />, app);
-
+}
 
