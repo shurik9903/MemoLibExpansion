@@ -14,23 +14,7 @@ console.log("Start Lib");
 
     let all_person = [];
 
-    await lib_logic.list_person().then(result => {
-    
-        let title_name = document.getElementsByClassName("reader-header-action__title")[0].innerText;
-        
-    
-        if (result && result.lib_user_data && result.lib_user_data.length != 0){
-    
-            let data = result.lib_user_data;
-    
-            for (let element of data)
-                if (element.title_name == title_name && element.title_data)
-                        all_person = element.title_data;
-                   
-        }
-
-
-        }, error => {
+    await lib_logic.list_person().then(result => { all_person = result }, error => {
             console.log(`Error data chrome get: ${error}`);
         }
     )
@@ -53,10 +37,24 @@ console.log("Start Lib");
 
                 [...person.other_name, person.person_name].forEach(all_name => {
 
-                    let reg = new RegExp(`(?<!name=")${all_name}?(|[ыейуаиляью]|ой|ёй|ью)`,'gi');
+                    let reg;
 
+                    let end_reg = `?(ер|ем|ой|ом|ёй|ью|[ыейуаиляью]|)`;
 
-                    new_div.innerHTML = new_div.innerHTML.replaceAll(reg, 
+                    console.log(all_name);
+
+                    all_name.split(' ').forEach((name, index) => {
+                        if (index == 0)
+                            reg = new RegExp(`${name}` + end_reg,'gi');
+                        else
+                            reg = new RegExp(reg.source + `(\\s${name}` + end_reg + `|)`,'gi');
+                    })
+
+                    let full_reg = new RegExp(`(?<!name=")` + reg.source,'gi');
+
+                    console.log(full_reg);
+
+                    new_div.innerHTML = new_div.innerHTML.replaceAll(full_reg, 
                         match => {
 
                             let person_div = document.createElement("div");
@@ -82,8 +80,7 @@ console.log("Start Lib");
         all_person_div.forEach(person_div => {
             all_person.forEach(person => {
                 
-                    let reg = new RegExp(`${person.person_name}?(|[ыейуаиляью]|ой|ёй|ью)`,'gi');
-
+                    let reg = new RegExp(`${person.person_name}?(ер|ем|ой|ом|ёй|ью|[ыейуаиляью]|)`,'gi');
 
                     if (reg.test(person_div.getAttribute("name"))){
 

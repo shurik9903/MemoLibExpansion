@@ -2,16 +2,18 @@ const path = require("path");
 const webpack = require("webpack");
 
 module.exports = {
-    //mode:'production',
-    mode:'development',
-    entry: './WEB/module/index.js',
+    mode:'production',
+    // mode:'development',
+    entry: { content: ['./build_test/content.js']},
     output: {
-        path: __dirname + '/build/',
-        filename: 'bundle.js'
+        publicPath: '',
+        path: __dirname + '/build_test/',
+        filename: 'contentscript.js',
+
     },
     devServer: {
         static : {
-          directory : __dirname + '/build/'
+          directory : __dirname + '/build_test/'
         },
         port: 6009,
         hot: true
