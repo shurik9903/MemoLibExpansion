@@ -16,8 +16,6 @@
     right: 0;
 
     z-index: 2;
-
-    min-width: 30%;
     max-width: 30%;
 
     padding: 0.25%;
@@ -38,6 +36,7 @@
 
     height: 25%;
     min-width: 10px;
+    max-width: 10px;
 
     border-radius: 5px;
 
@@ -64,29 +63,26 @@
 
     height: 100%;
     width: 100%;
-    max-width: 0;
-
-    
-    transition: max-width 0.2s ease-out;
-    
     
     border: 2px solid rgba(176, 176, 176, 0.7);
     border-radius: 5px;
 
 }
 
-.lib_basic[collapse = true] {
+.lib_window[collapse = false] {
+    width: 0%;
+}
 
-    max-width: 0;
-    visibility: hidden;
-
+.lib_window[collapse = true] {
+    width: 30%;
 }
 
 .lib_basic[collapse = false] {
-    
-    max-width: 100%;
-    visibility: visible;
+    visibility: hidden;
+}
 
+.lib_basic[collapse = true] {
+    visibility: visible;
 }
 
 .lib_menu {
@@ -269,13 +265,12 @@
 
 }
 
-.reader-container[lib = true] {
+/* .reader-container[lib = true] {
 
     margin: 0 33% 0 15%;
-    /* width: 67%;
-    max-width: 100% !important; */
+    
 
-}
+} */
 
 .lib_text_add {
 

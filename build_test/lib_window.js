@@ -1,371 +1,275 @@
+import React, { useEffect, useContext, useState } from 'react';
+import ReactDOM from 'react-dom';
 import {lib_logic} from "./lib_logic.js";
 
-let collapse;
+let show_person_data;
 
-const person_lib_view = (() => {
+const person_lib_view = ({data}) => {
 
-    let old_name = "";
+    const [name, setName] = useState('');
+    const [other_name, setOther_Name] = useState('');
+    const [color, setColor] = useState('');
+    const [text, setText] = useState('');
+    const [image, setImage] = useState([]);
+    const [old_name, setOld_Name] = useState('');
 
-    let view_name = document.createElement("div");
-    view_name.className = "lib_view_name";
+    const {setView} = useWindow();
 
-    //Имя персонажа
-    let name_container = document.createElement("div");
-    name_container.className = "lib_container lib_name_container";
+    const save_button = () => {
 
-
-    let name_text = document.createElement("div");
-    name_text.className = "lib_container_text";
-    name_text.innerText = "Имя";
-
-    let person = document.createElement("div");
-    person.className = "lib_person";
-
-    let name = document.createElement("input");
-    name.className = "lib_name";
-
-    let color_pick = document.createElement("input");
-    color_pick.className = "lib_input_color";
-    color_pick.type = "color";
-
-    color_pick.onchange = (e) => 
-        name.style.color = e.target.value;
-
-    [name, color_pick].forEach(e => person.appendChild(e));
-
-    let other_name_text = document.createElement("div");
-    other_name_text.className = "lib_container_text";
-    other_name_text.innerText = "Другие имена";
-
-    let other_person = document.createElement("div");
-    other_person.className = "lib_other_person";
-
-    let other_name = document.createElement("input");
-    other_name.className = "lib_other_name";
-
-    other_person.appendChild(other_name);
-
-    [name_text, person, other_name_text, other_person].forEach(e => name_container.appendChild(e));
-
-    //Изображения
-    let image_container = document.createElement("div");
-    image_container.className = "lib_container lib_image_container";
-
-    let image_text = document.createElement("div");
-    image_text.className = "lib_container_text";
-    image_text.innerText = "Изображения";
-
-    let image = document.createElement("div");
-    image.className = "lib_image";
-
-    [image_text, image].forEach(e => image_container.appendChild(e));
-
-    //Текст
-    let text_container = document.createElement("div");
-    text_container.className = "lib_container lib_text_container";
-
-    let text_text = document.createElement("div");
-    text_text.className = "lib_container_text";
-    text_text.innerText = "Описание";
-
-    let text = document.createElement("textarea");
-    text.className = "lib_text";
-
-    [text_text, text].forEach(e => text_container.appendChild(e));
-
-    let view_menu_container = document.createElement("div");
-    view_menu_container.className = "lib_view_menu_container";
-
-    let back_button = document.createElement("div");
-    back_button.className = "lib_back_button";
-    back_button.innerText = "Назад";
-
-    let save_button = document.createElement("div");
-    save_button.className = "lib_save_button";
-    save_button.innerText = "Сохранить";
-
-
-    save_button.onclick = () => {
-        
-        if (name.value.length == 0 || name.value.trim().length == 0)
+        if (name.length == 0 || name.trim().length == 0)
             return;
 
         let all_other_name = [];
         
-        other_name.value.split(',').forEach(e => {
+        other_name.split(',').forEach(e => {
             if (!(e.length == 0 || e.trim().length == 0))
                 all_other_name.push(e);
         })   
 
         let new_data = {
-            person_name: name.value,
+            person_name: name,
             other_name: all_other_name,
             image: [],
-            text: text.value,
-            color: color_pick.value,
+            text: text,
+            color: color,
         };
 
-        lib_logic.save_person_data(old_name, new_data)
-    };
+        lib_logic.save_person_data(old_name, new_data);
+    }
 
-    [save_button, back_button].forEach(e => view_menu_container.appendChild(e));
+    useEffect(() => {
 
-    [name_container, image_container, text_container, view_menu_container].forEach(e => view_name.appendChild(e));
+        setOld_Name(data.person_name);
 
-    const show = (person_data, back_callback) => {
-        collapse(true);
+        setName(data.person_name);
+        setColor(data.color);
 
-        old_name = person_data.person_name;
+        setOther_Name(data.other_name.toString());
 
-        name.value = old_name;
-        name.style.color = person_data.color;
-        color_pick.value = person_data.color;
+        data.image.forEach(e => { 
+            setImage(prev => [...prev, `<img width="100" height="200" src=${e}>`]);
+        });
 
-        other_name.value = person_data.other_name.toString()
+        setText(data.text);
 
-        person_data.image.forEach(e => { image.appendChild(`<img width="100" height="200" src=${e}>`) });
+    },[])
 
-        text.value = person_data.text;
+    return (
+        <div className={"lib_view_name"}>
+            <div className={"lib_container lib_name_container"}>
+                <div className={"lib_container_text"}>
+                    Имя
+                </div>
+                <div className={"lib_person"}>
+                    <input className={"lib_name"} style={{color: color}} onChange={name => setName(name.target.value)} value={name}/>
+                    <input className={"lib_input_color"} type={"color"} onChange={color => setColor(color.target.value)} value={color}/>
+                </div>
+                <div className={"lib_container_text"}>
+                    Другие имена
+                </div>
+                <div className={"lib_other_person"}>
+                    <input className={"lib_other_name"} onChange={other_name => setOther_Name(other_name.target.value)} value={other_name}/>
+                </div>
+            </div>
+            <div className={"lib_container lib_image_container"}>
+                <div className={"lib_container_text"}>
+                    Изображения
+                </div>
+                <div className={"lib_image"}>
+                </div>
+            </div>
+            <div className={"lib_container lib_text_container"}>
+                <div className={"lib_container_text"}>
+                    Описание
+                </div>
+                <textarea className={"lib_text"} onChange={text => setText(text.target.value)} value={text}/>
+            </div>
+            <div className={"lib_view_menu_container"}>
+                <div className={"lib_back_button"} onClick={() => setView(React.createElement(list_view, {}))}>
+                    Назад
+                </div>
+                <div className={"lib_save_button"} onClick={save_button}>
+                    Сохранить
+                </div>
+            </div>
+        </div>
+    )
 
-        back_button.onclick = back_callback;
+}
 
-        return view_name;
-    };
+const person_container = ({data}) => {
 
-    return {
-        show: show
-        
-    };
+    const {setView} = useWindow();
+    const {Refresh} = useList_view();
+    const [name, setName] = useState('');
+    const [color, setColor] = useState('');
 
-})();
+    useEffect(() => {
+        setName(data.person_name);
+        setColor(data.color);
+    },[])
 
+    const name_click = () => {
+        setView(React.createElement(person_lib_view, {data: data}));
+    }
 
-const list_view = (() => {
+    const delete_button = () => {
+        lib_logic.delete_person_data(name).then(result => {
+            Refresh();
+        })
+    }
 
-    let view_list = document.createElement("div");
-    view_list.className = "lib_view_list"; 
+    return (
+        <div className={"lib_person_container"}>
+            <div className={"lib_list_name"} style={{color:color}} onClick={name_click}>
+                {name}
+            </div>
+            <div className={"lib_delete_button"} onClick={delete_button}>
+                <img src={chrome.runtime.getURL('images/63481.png')}/>
+            </div>
+        </div>
+    )
+}
 
-    const show = (view) => {
+const list_view_Context = React.createContext();
 
-        collapse(true);
+const useList_view = () => {
+    return useContext(list_view_Context);
+}
+
+const list_view = () => {
+
+    const [view, setView] = useState('');
+
+    const Refresh = () => {
+        setView('');
 
         lib_logic.list_person().then(result => {
-
-            console.log(result);
-            
-            view_list.innerHTML = ''; 
-
-            result.forEach((data) => {
-
-
-                let person_container = document.createElement("div");
-                person_container.className = "lib_person_container";
-                
-
-                let name = document.createElement("div");
-                name.className = "lib_list_name";
-                name.innerText = data.person_name;
-                name.style.color = data.color;
-
-                let delete_button = document.createElement("div");
-                delete_button.className = "lib_delete_button";
-
-                delete_button.onclick = () => {
-                    lib_logic.delete_person_data(name.innerText).then(result => {
-                        view.innerHTML = '';
-                        view.appendChild(list_view.show(view))
-                    })
-                };
-
-                const img = document.createElement('img');
-                img.src = chrome.runtime.getURL('images/63481.png');
-                document.body.append(img);
-
-                delete_button.appendChild(img);
-
-                [name, delete_button].forEach(e => person_container.appendChild(e));
-
-                name.onclick = () => {
-                    view.innerHTML = '';
-                    view.appendChild(person_lib_view.show(data, () => {
-                        view.innerHTML = '';
-                        view.appendChild(list_view.show(view));
-                    }));
-                }
-
-                view_list.appendChild(person_container);
+            result.forEach(data => {
+                setView(prev => [...prev, React.createElement(person_container, {data: data})]);
             })
-
-            }, error => {
-                console.log(`Error data chrome get: ${error}`);
-            }
-        )
-
-        return view_list;
+        }, error => {
+            console.log(`Error data chrome get: ${error}`);
+        })
     }
 
-    return {
-        show: show
-    };
+    useEffect(() => {
 
-})()
+        Refresh()
 
+    },[])
 
-const add_person_view = (() => {
+    return (
+        <div className={"lib_view_list"}>
+            <list_view_Context.Provider value={{
+                        Refresh: Refresh
+                    }}>
+            {view}
+            </list_view_Context.Provider>
+        </div>
+    )
+}
 
-    let view_add = document.createElement("div");
-    view_add.className = "lib_view_add";
+const add_person_view = () => {
 
-    let text = document.createElement("div");
-    text.className = "lib_text_add";
-    text.innerText = "Введите имя нового персонажа";
+    const [name, setName] = useState('');
+    const [color, setColor] = useState('')
 
-    let input = document.createElement("input");
-    input.className = "lib_input_add";
-
-    let color_text = document.createElement("div");
-    color_text.className = "lib_text_add";
-    color_text.innerText = "Задайте цвет персонажа";
-
-    let color_pick = document.createElement("input");
-    color_pick.className = "lib_input_color";
-    color_pick.type = "color";
-
-    // let check_conteiner = document.createElement("div");
-    // check_conteiner.className = "lib_check_conteiner";
-
-    // let check_text = document.createElement("div");
-    // check_text.className = "lib_check_text";
-    // check_text.innerText = "Склоняемое имя:  ";
-
-    // let check_declination = document.createElement("input");
-    // check_declination.className = "lib_check_declination";
-    // check_declination.type = "checkbox";
-
-    // [check_text, check_declination].forEach(e => check_conteiner.appendChild(e));
-
-    let add = document.createElement("div");
-    add.className = "lib_button_add";
-    add.innerText = "Добавить";
-
-    add.onclick = () => {
-        if (input.value.replace(/\s/g, '').length != 0 && /[А-яЁёA-Za-z0-9]/g.test(input.value) == true){
-            console.log(`add ${input.value}`);
- 
-            lib_logic.new_person(input.value, color_pick.value).then(result => console.log(result));
-        }
-    }
-
-    [text, input, color_text, color_pick, add].forEach(e => view_add.appendChild(e));
-
-    const show = () => {
-        
-        collapse(true);
-
-        input.value = '';
+    useEffect(()=>{
+        setName('');
 
         let randomColor = Math.floor(Math.random()*16777215).toString(16);
-        color_pick.value = "#" + randomColor;
+        setColor("#" + randomColor);
+    },[])
 
-        // check_declination.checked = false;
-
-
-        return view_add;
-    };
-
-    return {
-        show: show
-    };
-
-})();
-
-
-const inject_window = (() => {
-
-    // chrome.storage.sync.clear();
-
-    //Внешнее Окно
-    let window = document.createElement("div");
-    window.className = "lib_window";
-
-    //Внутренее базовое окно
-    let basic = document.createElement("div");
-    basic.className = "lib_basic";
-    basic.setAttribute("collapse", true);
-    basic.style.maxWidth = null;
-
-    let collapse_button = document.createElement("div");
-    collapse_button.className = "lib_collapse";
-    collapse_button.innerText = '\u2770';
-
-    collapse = (visible) => {
-
-        let reader_container = document.getElementsByClassName("reader-container")[0];
-
-        if (!visible) {
-            collapse_button.innerHTML = '\u2770';
-            basic.setAttribute("collapse", true);
-            reader_container.setAttribute("lib", false);
-        } else {
-            collapse_button.innerHTML = '\u2771';
-            basic.setAttribute("collapse", false);
-            reader_container.setAttribute("lib", true);
+    const add = () => {
+        if (name.replace(/\s/g, '').length != 0 && /[А-яЁёA-Za-z0-9]/g.test(name) == true){
+            console.log(`add ${name}`);
+    
+            lib_logic.new_person(name, color).then(result => console.log(result));
         }
     }
 
-    collapse_button.onclick = () => {collapse(basic.getAttribute("collapse") == 'true')}
-    
+    return (
+        <div className={"lib_view_add"}>
+            <div className={"lib_text_add"}>
+                Введите имя нового персонажа
+            </div>
+            <input className={"lib_input_add"} onChange={text => setName(text.target.value)} value={name}/>
+            <div className={"lib_text_add"}>
+                Задайте цвет персонажа
+            </div>
+            <input className={"lib_input_color"} type={"color"} onChange={color => setColor(color.target.value)} value={color}/>
+            <div className={"lib_button_add"} onClick={add}>
+                Добавить
+            </div>
+        </div>
+    )
+}
 
-    [collapse_button, basic].forEach(e => window.appendChild(e));
 
-    //Меню
-    let menu = document.createElement("div");
-    menu.className = "lib_menu";
 
-    //Окно просмотра
-    let view = document.createElement("div");
-    view.className = "lib_view";
+const WindowContext = React.createContext();
 
-    basic.appendChild(menu);
+const useWindow = () => {
+    return useContext(WindowContext);
+}
 
-    //Кнопка добавления нового имени
-    let B_Add = document.createElement("div");
-    B_Add.className = "lib_button";
-    B_Add.innerHTML = "add";
+const window_view = () => {
 
-    B_Add.onclick = () => {
+    const [visible, setVisible] = useState(false);
+    const [arrow, setArrow] = useState('\u2770')
+    const [view, setView] = useState();
 
-        view.innerHTML = '';
-
-        view.appendChild(add_person_view.show());
+    const collapse = () => {
+        if (visible) 
+            setArrow('\u2770');
+         else 
+            setArrow('\u2771');
+        
+        setVisible(!visible);
     }
 
-    //Кнопка просмотра имеющихся имен
-    let B_List = document.createElement("div");
-    B_List.className = "lib_button";
-    B_List.innerHTML = "list";
+    useEffect(() => {
 
-    B_List.onclick = () => {
+        show_person_data = (data) => {
+            setVisible(true);
+            setArrow('\u2771');
+            setView(React.createElement(person_lib_view, {data: data}));
+        }
 
-        view.innerHTML = '';
+    },[])
 
-        view.appendChild(list_view.show(view));
-    }
+    return (
+        <div className={"lib_window"} collapse={`${visible}`}>
+            <WindowContext.Provider value={{
+                        getView: view,
+                        setView: setView
+                    }}>
+                <div className={"lib_collapse"} onClick={collapse}>
+                    {arrow}
+                </div>
+                <div className={"lib_basic"} collapse={`${visible}`} >
+                    <div className={"lib_menu"}>
+                        <div className={"lib_button"} onClick={() => setView(React.createElement(add_person_view, {}))}>
+                            add
+                        </div>
+                        <div className={"lib_button"} onClick={() => setView(React.createElement(list_view, {}))}>
+                            list
+                        </div>
+                    </div>
+                    <div className={"lib_view"}>
+                        {view}
+                    </div>
+                </div>
+            </WindowContext.Provider>
+        </div>
+    )
+} 
 
-    menu.appendChild(B_Add);
-    menu.appendChild(B_List);
-
-    basic.appendChild(view);
-
-    document.body.appendChild(window);
-
-    let t = () => {return "qwe"};
-
-    return {
-        get_view: view,
-        person_lib_view: person_lib_view.show,
-        list_view: list_view.show
-    }
+const inject_window = (() => {
+    ReactDOM.render(React.createElement(window_view, {}), document.body.appendChild(document.createElement("div")));
 })();
 
-export {inject_window};
+export {inject_window, show_person_data};

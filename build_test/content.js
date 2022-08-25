@@ -2,36 +2,24 @@
 
 console.log("Start Lib");
 
-// (async () => {
-
-//     //Импорт модуля
-//     const lib_src = chrome.runtime.getURL("lib_window.js");
-//     const lib = (await import(lib_src)).inject_window;
-
-// })();
-
-
 import React, { useEffect, useState, useContext } from 'react';
 import ReactDOM from 'react-dom';
 // import "./content.css";
 
-// import {inject_window} from "./lib_window";
+import {inject_window, show_person_data} from "./lib_window";
 import {lib_logic} from "./lib_logic";
 
 const text_div = ({children}) => {
-
     return (
-        <div class={"text"}> 
+        <div className={"text"}> 
             {children}
         </div>
     )
-
 }
 
-const person_div = ({children, name}) => {
-
+const person_div = ({children, name, color, data}) => {
     return (
-        <div name={name} class={"text"}>
+        <div name={name} className={"text"} style={{color:color}} onClick={() => show_person_data(data)}>
             {children}
         </div>
     )
@@ -46,22 +34,11 @@ const text_block = ({children}) => {
 
     useEffect(()=>{
 
-        let text = [React.createElement(text_div, {class:"text"}, children)];
+        let text = [React.createElement(text_div, {className:"text"}, children)];
         let new_text_elements = [];
 
-
-        let all_person = [{
-            person_name: "Лейлин",
-            other_name: []
-            },
-            {
-                person_name: "Рынка Эллинель",
-                other_name: []
-            }
-        ]
-
-        if (all_person)
-            all_person.forEach(person => {
+        if (getPersons && getPersons.length != 0){
+            getPersons.forEach(person => {
 
                 if (new_text_elements.length != 0)
                     text = new_text_elements;
@@ -101,9 +78,9 @@ const text_block = ({children}) => {
                             slice = text_element.slice(prev_person_last_index, find_element.index);
 
                             if (slice.length != 0)
-                                new_text_elements.push(React.createElement(text_div, {class:"text"}, slice));
-                            
-                            new_text_elements.push(React.createElement(person_div, {name:all_name}, find_element[0]));
+                                new_text_elements.push(React.createElement(text_div, {className:"text"}, slice));
+                        
+                            new_text_elements.push(React.createElement(person_div, {name:all_name, color:person.color, data: person}, find_element[0]));
                             
                             prev_person_last_index = find_element.index + find_element[0].length; 
                         })
@@ -111,7 +88,7 @@ const text_block = ({children}) => {
                         slice = text_element.slice(prev_person_last_index);
 
                         if (slice.length != 0)
-                                new_text_elements.push(React.createElement(text_div, {class:"text"}, slice));
+                                new_text_elements.push(React.createElement(text_div, {className:"text"}, slice));
                         
                     })
                 }
@@ -120,11 +97,12 @@ const text_block = ({children}) => {
         })
 
         setFull_Text(new_text_elements);
-        
-    },[])
+    } else setFull_Text(text);
+
+    },[getPersons])
 
     return (
-        <div class='text_block'>
+        <div className='text_block'>
             {full_text}
         </div>
     )
@@ -152,23 +130,37 @@ const app = () => {
 
             await lib_logic.list_person().then(result => { all_person = result }, error => {
                     console.log(`Error data chrome get: ${error}`);
-                }
-            )
+            })
 
             setPersons(all_person);
+
+            chrome.storage.onChanged.addListener(function (changes, namespace) {
+                for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+                    if (key == "lib_user_data"){
+                        (async () => {
+                            await lib_logic.list_person().then(result => { all_person = result }, error => {
+                                console.log(`Error data chrome get: ${error}`);
+                            })
+            
+                            setPersons(all_person);
+                        })();
+                    }
+                }
+            });
+
+            Array.from(Text_child).forEach(element => {
+
+                let new_text_block = React.createElement(text_block, {}, element.innerText);
+
+                setChild(prev => [...prev, new_text_block])
+            });
+
         })();
-
-        Array.from(Text_child).forEach(element => {
-
-            let new_text_block = React.createElement(text_block, {}, element.innerText);
-
-            setChild(prev => [...prev, new_text_block])
-        });
         
     },[]);
 
     return (
-        <div class={"reader-container container container_center"} lib={false}>
+        <div className={"reader-container container container_center"} lib={false}>
             <AppContext.Provider value={{
                         getPersons: persons,
                         setPersons: setPersons
@@ -178,6 +170,8 @@ const app = () => {
         </div>
     );
 }
+
+
 
 let reader = document.getElementsByClassName("reader");
 let reader_container = document.getElementsByClassName("reader-container");

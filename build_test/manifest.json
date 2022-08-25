@@ -29,6 +29,12 @@
           "js": ["contentscript.js"],
           "css": ["contentcss.css"]
         }
-    ]
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [ "images/63481.png" ],
+            "matches": [ "https://ranobelib.me/*" ]
+        }
+     ]
     
 }
